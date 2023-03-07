@@ -9,7 +9,7 @@ pipeline {
         ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         RANCHER_URL="https://rancher.talkan.live"
         // Get the project-id from Rancher UI (projects/namespaces --> petclinic-cluster-staging namespace --> Edit yaml --> copy projectId )
-        RANCHER_CONTEXT="petclinic-cluster:p-w5pzj" 
+        RANCHER_CONTEXT="c-q72wj:p-w5pzj" 
        //First part of projectID
         CLUSTERID="c-q72wj"
         RANCHER_CREDS=credentials('rancher-petclinic-credentials')
