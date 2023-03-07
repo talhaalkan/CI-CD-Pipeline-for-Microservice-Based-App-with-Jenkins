@@ -3856,7 +3856,7 @@ nano /home/ec2-user/.m2/settings.xml
       <!--This sends everything else to /public -->
       <id>nexus</id>
       <mirrorOf>*</mirrorOf>
-      <url>http://54.242.80.132:8081/repository/maven-public/</url>
+      <url>http://54.90.80.201:8081/repository/maven-public/</url>
     </mirror>
   </mirrors>
   <profiles>
@@ -3911,12 +3911,12 @@ nano /home/ec2-user/.m2/settings.xml
   <repository>
     <id>nexus</id>
     <name>maven-releases</name>
-    <url>http://54.242.80.132:8081/repository/maven-releases/</url>
+    <url>http://54.90.80.201:8081/repository/maven-releases/</url>
   </repository>
   <snapshotRepository>
     <id>nexus</id>
     <name>maven-snapshots</name>
-    <url>http://54.242.80.132:8081/repository/maven-snapshots/</url>
+    <url>http://54.90.80.201:8081/repository/maven-snapshots/</url>
   </snapshotRepository>
 </distributionManagement>
 ```
