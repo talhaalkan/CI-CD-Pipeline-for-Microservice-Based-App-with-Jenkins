@@ -2433,8 +2433,12 @@ DNS_NAME: "DNS Name of your application"
 * Create an ``S3 bucket`` for Helm charts. In the bucket, create a ``folder`` called ``stable/myapp``. The example in this pattern uses s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp as the target chart repository.
 
 ```bash
+
 aws s3api create-bucket --bucket petclinic-helm-charts-petclinictr.talkan.live --region us-east-1
-aws s3api put-object --bucket petclinic-helm-charts-petclinictr.talkan.live --key stable/myapp/
+
+aws s3api create-bucket --bucket petclinic-helm-charts-petclinic.talkan.live --region us-east-1
+aws s3api put-object --bucket petclinic-helm-charts-petclinic.talkan.live --key stable/myapp/
+
 ```
 
 * Install the helm-s3 plugin for Amazon S3.
@@ -2455,22 +2459,33 @@ helm plugin install https://github.com/hypnoglow/helm-s3.git
 * ``Initialize`` the Amazon S3 Helm repository.
 
 ```bash
+
 AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-petclinictr.talkan.live/stable/myapp 
+=======
+AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp 
+
 ```
 
 * The command creates an ``index.yaml`` file in the target to track all the chart information that is stored at that location.
 
 * Verify that the ``index.yaml`` file was created.
 
-```bash
+```bash<<<<<< feature/msp-17
 aws s3 ls s3://petclinic-helm-charts-petclinictr.talkan.live/stable/myapp/
+
+aws s3 ls s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp/
+
 ```
 
 * Add the Amazon S3 repository to Helm on the client machine. 
 
 ```bash
 helm repo ls
+
 AWS_REGION=us-east-1 helm repo add stable-petclinicapptr s3://petclinic-helm-charts-petclinictr.talkan.live/stable/myapp/
+
+AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp/
+
 ```
 
 * Update `version` and `appVersion` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
