@@ -2455,27 +2455,21 @@ export PATH=$PATH:/usr/local/bin
 helm version
 helm plugin install https://github.com/hypnoglow/helm-s3.git
 ``` 
-
 * ``Initialize`` the Amazon S3 Helm repository.
 
 ```bash
 
 AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-petclinictr.talkan.live/stable/myapp 
-=======
-AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp 
 
-```
+AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp 
 
 * The command creates an ``index.yaml`` file in the target to track all the chart information that is stored at that location.
 
 * Verify that the ``index.yaml`` file was created.
 
-```bash<<<<<< feature/msp-17
+```bash
 aws s3 ls s3://petclinic-helm-charts-petclinictr.talkan.live/stable/myapp/
-
 aws s3 ls s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp/
-
-```
 
 * Add the Amazon S3 repository to Helm on the client machine. 
 
@@ -2487,7 +2481,6 @@ AWS_REGION=us-east-1 helm repo add stable-petclinicapptr s3://petclinic-helm-cha
 AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp/
 
 ```
-
 * Update `version` and `appVersion` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
 
 ```yaml
@@ -2522,11 +2515,9 @@ stable-petclinicapp/petclinic_chart     0.0.1           0.1.0           A Helm c
 ```
 
 * In ``Chart.yaml``, ``set`` the `version` value to `0.0.2` in Chart.yaml, and then package the chart, this time changing the version in Chart.yaml to 0.0.2. Version control is ideally achieved through automation by using tools like GitVersion or Jenkins build numbers in a CI/CD pipeline. 
-
 ```bash
 helm package petclinic_chart/
 ```
-
 * Push the new version to the Helm repository in Amazon S3.
 
 ```bash
@@ -2539,14 +2530,12 @@ HELM_S3_MODE=3 AWS_REGION=us-east-1 helm s3 push ./petclinic_chart-0.0.2.tgz sta
 helm repo update
 helm search repo stable-petclinicapptr
 ```
-
 * You get an ``output`` as below.
 
 ```bash
 NAME                                    CHART VERSION   APP VERSION     DESCRIPTION                
 stable-petclinicapp/petclinic_chart     0.0.2           0.1.0           A Helm chart for Kubernetes
-```
-
+``
 * To view all the available versions of a chart execute following command.
 
 ```bash
@@ -2573,21 +2562,17 @@ git checkout dev
 git merge feature/msp-17
 git push origin dev
 ```
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 ## MSP 18 - Prepare a QA Automation Pipeline for Nightly Builds
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 - Create `feature/msp-18` branch from `dev`.
-
 ```bash
 git checkout dev
 git branch feature/msp-18
 git checkout feature/msp-18
 ```
-
 - Prepare a script to ``package`` the app with maven Docker container and save it as `package-with-maven-container.sh` and save it under `jenkins` folder.
-
 ```bash
 docker run --rm -v $HOME/.m2:/root/.m2 -v $WORKSPACE:/app -w /app maven:3.6-openjdk-11 mvn clean package
 ```
