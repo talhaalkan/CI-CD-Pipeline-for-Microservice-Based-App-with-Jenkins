@@ -1705,7 +1705,7 @@ resource "aws_instance" "kube-master" {
 resource "aws_instance" "worker-1" {
     ami = "ami-013f17f36f8b1fefb"
     instance_type = "t3a.medium"
-        iam_instance_profile = module.iam.worker_profile_name
+    iam_instance_profile = module.iam.worker_profile_name
     vpc_security_group_ids = [aws_security_group.petclinic-kube-worker-sg.id, aws_security_group.petclinic-mutual-sg.id]
     key_name = "clarus"
     subnet_id = "subnet-c41ba589"  # select own subnet_id of us-east-1a
@@ -2430,11 +2430,11 @@ DNS_NAME: "DNS Name of your application"
 
 * This pattern helps you to manage Helm v3 charts efficiently by integrating the Helm v3 repository into Amazon Simple Storage Service (Amazon S3) on the Amazon Web Services (AWS) Cloud. (https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/set-up-a-helm-v3-chart-repository-in-amazon-s3.html)
 
-* Create an ``S3 bucket`` for Helm charts. In the bucket, create a ``folder`` called ``stable/myapp``. The example in this pattern uses s3://petclinic-helm-charts-<put-your-name>/stable/myapp as the target chart repository.
+* Create an ``S3 bucket`` for Helm charts. In the bucket, create a ``folder`` called ``stable/myapp``. The example in this pattern uses s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp as the target chart repository.
 
 ```bash
-aws s3api create-bucket --bucket petclinic-helm-charts-<put-your-name> --region us-east-1
-aws s3api put-object --bucket petclinic-helm-charts-<put-your-name> --key stable/myapp/
+aws s3api create-bucket --bucket petclinic-helm-charts-petclinictr.talkan.live --region us-east-1
+aws s3api put-object --bucket petclinic-helm-charts-petclinictr.talkan.live --key stable/myapp/
 ```
 
 * Install the helm-s3 plugin for Amazon S3.
@@ -2455,7 +2455,7 @@ helm plugin install https://github.com/hypnoglow/helm-s3.git
 * ``Initialize`` the Amazon S3 Helm repository.
 
 ```bash
-AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-<put-your-name>/stable/myapp 
+AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-petclinictr.talkan.live/stable/myapp 
 ```
 
 * The command creates an ``index.yaml`` file in the target to track all the chart information that is stored at that location.
@@ -2463,14 +2463,14 @@ AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-<put-your-name>/sta
 * Verify that the ``index.yaml`` file was created.
 
 ```bash
-aws s3 ls s3://petclinic-helm-charts-<put-your-name>/stable/myapp/
+aws s3 ls s3://petclinic-helm-charts-petclinictr.talkan.live/stable/myapp/
 ```
 
 * Add the Amazon S3 repository to Helm on the client machine. 
 
 ```bash
 helm repo ls
-AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts-<put-your-name>/stable/myapp/
+AWS_REGION=us-east-1 helm repo add stable-petclinicapptr s3://petclinic-helm-charts-petclinictr.talkan.live/stable/myapp/
 ```
 
 * Update `version` and `appVersion` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
@@ -2490,13 +2490,13 @@ helm package petclinic_chart/
 * Store the local package in the Amazon S3 Helm repository.
 
 ```bash
-HELM_S3_MODE=3 AWS_REGION=us-east-1 helm s3 push ./petclinic_chart-0.0.1.tgz stable-petclinicapp
+HELM_S3_MODE=3 AWS_REGION=us-east-1 helm s3 push ./petclinic_chart-0.0.5.tgz stable-petclinicapptr
 ```
 
 * Search for the Helm chart.
 
 ```bash
-helm search repo stable-petclinicapp
+helm search repo stable-petclinicapptr
 ```
 
 * You get an output as below.
@@ -2522,7 +2522,7 @@ HELM_S3_MODE=3 AWS_REGION=us-east-1 helm s3 push ./petclinic_chart-0.0.2.tgz sta
 
 ```bash
 helm repo update
-helm search repo stable-petclinicapp
+helm search repo stable-petclinicapptr
 ```
 
 * You get an ``output`` as below.
@@ -2535,7 +2535,7 @@ stable-petclinicapp/petclinic_chart     0.0.2           0.1.0           A Helm c
 * To view all the available versions of a chart execute following command.
 
 ```bash
-helm search repo stable-petclinicapp --versions
+helm search repo stable-petclinicapptr --versions
 ```
 
 * Output:
@@ -3221,7 +3221,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 echo 'Deploying App on Kubernetes'
 envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml
 sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml
-AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/ || echo "repository name already exists"
+AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp/ || echo "repository name already exists"
 AWS_REGION=$AWS_REGION helm repo update
 helm package k8s/petclinic_chart
 AWS_REGION=$AWS_REGION helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic
@@ -4045,9 +4045,9 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 * Install `Rancher CLI` on Jenkins Server.
 
 ```bash
-curl -SsL "https://github.com/rancher/cli/releases/download/v2.6.9/rancher-linux-amd64-v2.6.9.tar.gz" -o "rancher-cli.tar.gz"
+curl -SsL "https://github.com/rancher/cli/releases/download/v2.7.0/rancher-linux-amd64-v2.7.0.tar.gz" -o "rancher-cli.tar.gz"
 tar -zxvf rancher-cli.tar.gz
-sudo mv ./rancher-v2.6.9/rancher /usr/local/bin/rancher
+sudo mv ./rancher-v2.7.0/rancher /usr/local/bin/rancher
 chmod +x /usr/local/bin/rancher
 rancher --version
 ```
@@ -4142,7 +4142,7 @@ pipeline {
                 sh "rm -f k8s/config"
                 sh "rancher cluster kf $CLUSTERID > k8s/config"
                 sh "chmod 400 k8s/config"
-                sh "helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/"
+                sh "helm repo add stable-petclinic s3://petclinic-helm-charts-petclinic.talkan.live/stable/myapp/"
                 sh "helm package k8s/petclinic_chart"
                 sh "helm s3 push --force petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic"
                 sh "helm repo update"
