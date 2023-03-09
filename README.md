@@ -1843,7 +1843,7 @@ terraform apply -auto-approve -no-color
 
 ```bash
 ANS_KEYPAIR="petclinic-ansible-test-dev.key"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${WORKSPACE}/${ANS_KEYPAIR} ubuntu@172.31.91.243 hostname
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${WORKSPACE}/${ANS_KEYPAIR} ubuntu@172.31.47.193 hostname
 ```
   * Click `Save`
 
@@ -3588,7 +3588,7 @@ aws ec2 create-key-pair --region us-east-1 --key-name petclinic-rancher --query 
 chmod 400 ~/.ssh/petclinic-rancher.pem
 ```
 
-* Launch an EC2 instance using `Ubuntu Server 20.04 LTS (HVM) (64-bit x86)` with `t3a.medium` type, 16 GB root volume,  `petclinic-rke-cluster-sg` security group, `petclinic-rke-role` IAM Role, `Name:Petclinic-Rancher-Cluster-Instance` tag and `petclinic-rancher.pem` key-pair. Take note of `subnet id` of EC2. 
+* Launch an EC2 instance using `Ubuntu Server 20.04 LTS (HVM) (64-bit x86)` with `t3a.medium` type, 16 GB root volume,  `petclinic-rke-cluster-sg` security group, `petclinic-rke-role` IAM Role, `Name:Petclinic-Rancher-Cluster-Instance` tag and `petclinic-rancher.pem` key-pair. Take note of `subnet id` of EC2. subnet-052509928de4ba079
 
 * Attach a tag to the `nodes (intances)`, `subnets` and `security group` for Rancher with `Key = kubernetes.io/cluster/Petclinic-Rancher` and `Value = owned`.
   
@@ -3623,7 +3623,7 @@ sudo apt-get install docker-ce=5:20.10.23~3-0~ubuntu-focal docker-ce-cli=5:20.10
 sudo systemctl start docker
 sudo systemctl enable docker
 
-# Add ubuntu user to docker group
+# Add ubuntu user to docker group  VERSION_STRING=5:20.10.23~3-0~ubuntu-focal
 sudo usermod -aG docker ubuntu
 newgrp docker
 ```
@@ -3676,8 +3676,8 @@ rke --version
 
 ```yml
 nodes:
-  - address: 172.31.82.64                # Change with the Private Ip of rancher server
-    internal_address: 172.31.82.64       # Change with the Private Ip of rancher server
+  - address: 172.31.24.123                # Change with the Private Ip of rancher server
+    internal_address: 172.31.24.123       # Change with the Private Ip of rancher server
     user: ubuntu
     role:
       - controlplane
@@ -3744,7 +3744,7 @@ helm repo list
 * Create a ``namespace`` for Rancher.
 
 ```bash
-kubectl create namespace cattle-system
+kubectl create namespace cattle-system #*namespace rancher server'da oluşuyor.
 ```
 
 * Install Rancher on RKE Kubernetes Cluster using Helm.
@@ -3752,7 +3752,7 @@ kubectl create namespace cattle-system
 ```bash
 helm install rancher rancher-latest/rancher \
   --namespace cattle-system \
-  --set hostname=rancher.clarusway.us \    # Change DNS name
+  --set hostname=rancher.talkan.live \
   --set tls=external \
   --set replicas=1
 ```
@@ -3775,7 +3775,7 @@ kubectl --kubeconfig $KUBECONFIG -n cattle-system exec $(kubectl --kubeconfig $K
 ## MSP 25 - Create Staging and Production Environment with Rancher
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-* To provide access of Rancher to the cloud resources, create a `Cloud Credentials` for AWS on Rancher and name it as `Petclinic-AWS-Training-Account`.
+* To provide access of Rancher to the cloud resources, create a `Cloud Credentials` for AWS on Rancher and name it as `Petclinic-AWS-Training-Account`. https://rancher.talkan.live
 
 * Create a `Node Template` on Rancher with following configuration for to be used while launching the EC2 instances and name it as `Petclinic-AWS-RancherOs-Template`.
 
@@ -3856,7 +3856,7 @@ nano /home/ec2-user/.m2/settings.xml
       <!--This sends everything else to /public -->
       <id>nexus</id>
       <mirrorOf>*</mirrorOf>
-      <url>http://<AWS private IP>:8081/repository/maven-public/</url>
+      <url>http://54.90.80.201:8081/repository/maven-public/</url>
     </mirror>
   </mirrors>
   <profiles>
@@ -3890,7 +3890,7 @@ nano /home/ec2-user/.m2/settings.xml
     <server>
       <id>nexus</id>
       <username>admin</username>
-      <password>your-password</password> 
+      <password>12345</password> 
     </server>
   </servers>
 </settings>
@@ -3911,12 +3911,12 @@ nano /home/ec2-user/.m2/settings.xml
   <repository>
     <id>nexus</id>
     <name>maven-releases</name>
-    <url>http://<AWS private IP>:8081/repository/maven-releases/</url>
+    <url>http://54.90.80.201:8081/repository/maven-releases/</url>
   </repository>
   <snapshotRepository>
     <id>nexus</id>
     <name>maven-snapshots</name>
-    <url>http://<AWS private IP>:8081/repository/maven-snapshots/</url>
+    <url>http://54.90.80.201:8081/repository/maven-snapshots/</url>
   </snapshotRepository>
 </distributionManagement>
 ```
